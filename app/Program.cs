@@ -6,12 +6,13 @@ namespace MyApp
 {
     class Program
     {
-        static StringBuilder solve(string azureRegion, string appName, string component, string farmRole, string enviornment, string operatingSystem, string seqNumber)
+        static void solve(string azureRegion, string appName, string component, string farmRole, string enviornment, string operatingSystem, string serverCount)
         {
             StringBuilder serverName = new StringBuilder();
 
             // concat azure region 
-            switch (azureRegion) {
+            switch (azureRegion)
+            {
                 case "SC Region":
                     serverName.Append("DC10 ");
                     break;
@@ -25,24 +26,32 @@ namespace MyApp
             }
 
             // concat app name
-            if (appName.Length >= 3) {
+            if (appName.Length >= 3)
+            {
                 serverName.Append(appName.Substring(0, 3) + " ");
-            } else {
+            }
+            else
+            {
                 throw new Exception("Invalid app name");
             }
 
             // concat component
-            if (component.Length > 3) {
+            if (component.Length > 3)
+            {
                 serverName.Append(component.Substring(0, 3) + " ");
             }
-            else if (component.Length > 1) {
+            else if (component.Length > 1)
+            {
                 serverName.Append(component + " ");
-            } else {
+            }
+            else
+            {
                 throw new Exception("Invalid component");
             }
 
             // concat farm role
-            switch (farmRole) {
+            switch (farmRole)
+            {
                 case "Web":
                     serverName.Append("W ");
                     break;
@@ -59,7 +68,8 @@ namespace MyApp
             }
 
             // concat enviornment 
-            switch (enviornment) {
+            switch (enviornment)
+            {
                 case "Development":
                     serverName.Append("D ");
                     break;
@@ -85,7 +95,8 @@ namespace MyApp
             }
 
             // concat operating system 
-            switch (operatingSystem) {
+            switch (operatingSystem)
+            {
                 case "Windows":
                     serverName.Append("W ");
                     break;
@@ -95,54 +106,48 @@ namespace MyApp
                 default: throw new Exception("Invalid operating system");
             }
 
-            // concat seq number 
-            serverName.Append(seqNumber);
-
-            return serverName;
+            // concat server count 
+            if(int.Parse(serverCount)>0 && int.Parse(serverCount)<100){
+                for(var i=0;i<int.Parse(serverCount);i++){
+                    if(i<9){
+                        Console.WriteLine(serverName+" 0"+(i+1));
+                    } else {
+                        Console.WriteLine(serverName+" "+(i+1)); 
+                    }
+                }
+            } else {
+                throw new Exception("Invalid Server Name");
+            }
+            
         }
         static void Main(string[] args)
         {
             try
             {
-                // Test Case 1: Basic case with all valid inputs
-                var testCase1 = solve("SC Region", "MyA", "Co", "Web", "Development", "Windows", "12345");
-                Console.WriteLine($"Test Case 1: {testCase1}");
+                // Prompt the user for input
+                Console.WriteLine("Enter Azure Region:");
+                string azureRegion = Console.ReadLine();
 
-                // Test Case 2: Another basic case with all valid inputs
-                var testCase2 = solve("NC Region", "YourApp", "Component2", "App", "QA", "Linux", "67890");
-                Console.WriteLine($"Test Case 2: {testCase2}");
+                Console.WriteLine("Enter App Name:");
+                string appName = Console.ReadLine();
 
-                // Test Case 3: Case with different Azure region and farm role
-                var testCase3 = solve("Azure Stack", "TheirApp", "Component3", "Database", "Production", "Windows", "54321");
-                Console.WriteLine($"Test Case 3: {testCase3}");
+                Console.WriteLine("Enter Component:");
+                string component = Console.ReadLine();
 
-                // Test Case 4: Case with long app name and component
-                var testCase4 = solve("SC Region", "LongApplicationName", "LongComponentName", "App/Web", "Training", "Linux", "98765");
-                Console.WriteLine($"Test Case 4: {testCase4}");
+                Console.WriteLine("Enter Farm Role:");
+                string farmRole = Console.ReadLine();
 
-                // Test Case 5: Case with different environment and operating system
-                var testCase5 = solve("NC Region", "TestApp", "Component4", "Web", "Stage", "Linux", "45678");
-                Console.WriteLine($"Test Case 5: {testCase5}");
+                Console.WriteLine("Enter Environment:");
+                string environment = Console.ReadLine();
 
-                // Test Case 6: Case with invalid azure region
-                var testCase6 = solve("Invalid Region", "App", "Component5", "Web", "Development", "Windows", "13579");
-                Console.WriteLine($"Test Case 6: {testCase6}");
+                Console.WriteLine("Enter Operating System:");
+                string operatingSystem = Console.ReadLine();
 
-                // Test Case 7: Case with invalid farm role
-                var testCase7 = solve("SC Region", "App", "Component6", "InvalidRole", "Development", "Windows", "24680");
-                Console.WriteLine($"Test Case 7: {testCase7}");
+                Console.WriteLine("Enter Server Count:");
+                string serverCount = Console.ReadLine();
 
-                // Test Case 8: Case with invalid environment
-                var testCase8 = solve("NC Region", "App", "Component7", "App", "InvalidEnv", "Windows", "87654");
-                Console.WriteLine($"Test Case 8: {testCase8}");
-
-                // Test Case 9: Case with invalid operating system
-                var testCase9 = solve("Azure Stack", "App", "Component8", "Database", "Production", "InvalidOS", "98765");
-                Console.WriteLine($"Test Case 9: {testCase9}");
-
-                // Test Case 10: Case with empty app name and component
-                var testCase10 = solve("SC Region", "", "", "Web", "Development", "Windows", "11111");
-                Console.WriteLine($"Test Case 10: {testCase10}");
+                // Call the solve method with user-provided inputs
+                solve(azureRegion, appName, component, farmRole, environment, operatingSystem ,serverCount);
             }
             catch (Exception ex)
             {

@@ -1,4 +1,4 @@
-function Solve {
+function Solve-ServerName {
     param(
         [string]$azureRegion,
         [string]$appName,
@@ -6,12 +6,11 @@ function Solve {
         [string]$farmRole,
         [string]$environment,
         [string]$operatingSystem,
-        [string]$seqNumber
+        [string]$serverCount
     )
 
-    $serverName = New-Object -TypeName System.Text.StringBuilder
+    $serverName = New-Object System.Text.StringBuilder
 
-    # Concatenate azure region
     switch ($azureRegion) {
         "SC Region" { $serverName.Append("DC10 ") }
         "NC Region" { $serverName.Append("DC20 ") }
@@ -19,14 +18,12 @@ function Solve {
         default { throw "Invalid azure region" }
     }
 
-    # Concatenate app name
     if ($appName.Length -ge 3) {
         $serverName.Append($appName.Substring(0, 3) + " ")
     } else {
         throw "Invalid app name"
     }
 
-    # Concatenate component
     if ($component.Length -gt 3) {
         $serverName.Append($component.Substring(0, 3) + " ")
     } elseif ($component.Length -gt 1) {
@@ -35,7 +32,6 @@ function Solve {
         throw "Invalid component"
     }
 
-    # Concatenate farm role
     switch ($farmRole) {
         "Web" { $serverName.Append("W ") }
         "App" { $serverName.Append("A ") }
@@ -44,7 +40,6 @@ function Solve {
         default { throw "Invalid farm role" }
     }
 
-    # Concatenate environment
     switch ($environment) {
         "Development" { $serverName.Append("D ") }
         "QA" { $serverName.Append("Q ") }
@@ -56,23 +51,47 @@ function Solve {
         default { throw "Invalid environment" }
     }
 
-    # Concatenate operating system
     switch ($operatingSystem) {
         "Windows" { $serverName.Append("W ") }
         "Linux" { $serverName.Append("L ") }
         default { throw "Invalid operating system" }
     }
 
-    # Concatenate seq number
-    $serverName.Append($seqNumber)
-
-
-    Write-Host "Server name: $($serverName.ToString())"
+    if ([int]$serverCount -gt 0 -and [int]$serverCount -lt 100) {
+        for ($i = 1; $i -le [int]$serverCount; $i++) {
+            $serverNumber = "{0:D2}" -f $i
+            Write-Host ($serverName.ToString() + " " + $serverNumber)
+        }
+    } else {
+        throw "Invalid Server Count"
+    }
 }
 
-# Test the function
 try {
-    Solve -azureRegion "SC Region" -appName "MyApp" -component "Component1" -farmRole "Web" -environment "Development" -operatingSystem "Windows" -seqNumber "12345"
+    # Prompt the user for input
+    Write-Host "Enter Azure Region:"
+    $azureRegion = Read-Host
+
+    Write-Host "Enter App Name:"
+    $appName = Read-Host
+
+    Write-Host "Enter Component:"
+    $component = Read-Host
+
+    Write-Host "Enter Farm Role:"
+    $farmRole = Read-Host
+
+    Write-Host "Enter Environment:"
+    $environment = Read-Host
+
+    Write-Host "Enter Operating System:"
+    $operatingSystem = Read-Host
+
+    Write-Host "Enter Server Count:"
+    $serverCount = Read-Host
+
+    # Call the Solve-ServerName function with user-provided inputs
+    Solve-ServerName -azureRegion $azureRegion -appName $appName -component $component -farmRole $farmRole -environment $environment -operatingSystem $operatingSystem -serverCount $serverCount
 } catch {
-    Write-Host "Error: $_"
+    Write-Host "Exception: $_"
 }
