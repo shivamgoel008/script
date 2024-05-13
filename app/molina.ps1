@@ -12,55 +12,55 @@ function Solve-ServerName {
     $serverName = New-Object System.Text.StringBuilder
 
     switch ($azureRegion) {
-        "SC Region" { $serverName.Append("DC10 ") }
-        "NC Region" { $serverName.Append("DC20 ") }
-        "Azure Stack" { $serverName.Append("DC30 ") }
+        "SC Region" { [void]$serverName.Append("DC10 ") }
+        "NC Region" { [void]$serverName.Append("DC20 ") }
+        "Azure Stack" { [void]$serverName.Append("DC30 ") }
         default { throw "Invalid azure region" }
     }
 
     if ($appName.Length -ge 3) {
-        $serverName.Append($appName.Substring(0, 3) + " ")
+        [void]$serverName.Append($appName.Substring(0, 3) + " ")
     } else {
         throw "Invalid app name"
     }
 
     if ($component.Length -gt 3) {
-        $serverName.Append($component.Substring(0, 3) + " ")
+        [void]$serverName.Append($component.Substring(0, 3) + " ")
     } elseif ($component.Length -gt 1) {
-        $serverName.Append($component + " ")
+        [void]$serverName.Append($component + " ")
     } else {
         throw "Invalid component"
     }
 
     switch ($farmRole) {
-        "Web" { $serverName.Append("W ") }
-        "App" { $serverName.Append("A ") }
-        "Database" { $serverName.Append("D ") }
-        "App/Web" { $serverName.Append("A ") }
+        "Web" { [void]$serverName.Append("W ") }
+        "App" { [void]$serverName.Append("A ") }
+        "Database" { [void]$serverName.Append("D ") }
+        "App/Web" { [void]$serverName.Append("A ") }
         default { throw "Invalid farm role" }
     }
 
     switch ($environment) {
-        "Development" { $serverName.Append("D ") }
-        "QA" { $serverName.Append("Q ") }
-        "UAT" { $serverName.Append("U ") }
-        "Training" { $serverName.Append("T ") }
-        "Stage" { $serverName.Append("S ") }
-        "Production" { $serverName.Append("P ") }
-        "DR" { $serverName.Append("P ") }
+        "Development" { [void]$serverName.Append("D ") }
+        "QA" { [void]$serverName.Append("Q ") }
+        "UAT" { [void]$serverName.Append("U ") }
+        "Training" { [void]$serverName.Append("T ") }
+        "Stage" { [void]$serverName.Append("S ") }
+        "Production" { [void]$serverName.Append("P ") }
+        "DR" { [void]$serverName.Append("P ") }
         default { throw "Invalid environment" }
     }
 
     switch ($operatingSystem) {
-        "Windows" { $serverName.Append("W ") }
-        "Linux" { $serverName.Append("L ") }
+        "Windows" { [void]$serverName.Append("W ") }
+        "Linux" { [void]$serverName.Append("L ") }
         default { throw "Invalid operating system" }
     }
 
     if ([int]$serverCount -gt 0 -and [int]$serverCount -lt 100) {
         for ($i = 1; $i -le [int]$serverCount; $i++) {
             $serverNumber = "{0:D2}" -f $i
-            Write-Host ($serverName.ToString() + " " + $serverNumber)
+            Write-Output ($serverName.ToString() + " " + $serverNumber)
         }
     } else {
         throw "Invalid Server Count"
